@@ -1,0 +1,31 @@
+
+name: Build dylib
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: |
+          SDK=$(xcrun --sdk iphoneos --show-sdk-path)
+          clang -arch arm64 \
+            -isysroot "$SDK" \
+            -miphoneos-version-min=13.0 \
+            -dynamiclib \
+            -fobjc-arc \
+            -framework Foundation \
+            -o MyLib.dylib MyLib.m
+
+      - name: Sign library
+        run: codesign -f -s - MyLib.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MyLib
+          path: MyLib.dylib
