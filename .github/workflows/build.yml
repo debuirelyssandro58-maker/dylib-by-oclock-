@@ -20,6 +20,8 @@ jobs:
             -dynamiclib \
             -fobjc-arc \
             -framework Foundation \
+            -framework UIKit \
+      
             -o MyLib.dylib MyLib.m
 
       - name: Sign library
